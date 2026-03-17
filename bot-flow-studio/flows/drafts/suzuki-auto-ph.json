@@ -1,0 +1,158 @@
+{
+  "id": "suzuki-auto-ph",
+  "name": "Suzuki Auto PH (Website Bot)",
+  "description": "Starter flow modeled after the Suzuki Auto PH site navigation (models, price list, quote, dealers, service).",
+  "startNodeId": "n_welcome",
+  "nodes": [
+    {
+      "id": "n_welcome",
+      "type": "message",
+      "text": "Hi! Welcome to Suzuki Automobile Philippines. What would you like to do today?",
+      "nextNodeId": "n_main_menu"
+    },
+    {
+      "id": "n_main_menu",
+      "type": "buttons",
+      "text": "Choose an option:",
+      "buttons": [
+        {
+          "id": "b_models",
+          "label": "Explore models",
+          "nextNodeId": "n_models"
+        },
+        {
+          "id": "b_pricelist",
+          "label": "Price list",
+          "nextNodeId": "n_pricelist"
+        },
+        {
+          "id": "b_quote",
+          "label": "Get a quote",
+          "nextNodeId": "n_quote"
+        },
+        {
+          "id": "b_dealer",
+          "label": "Find a dealer",
+          "nextNodeId": "n_dealer"
+        },
+        {
+          "id": "b_service",
+          "label": "Book service",
+          "nextNodeId": "n_service"
+        }
+      ]
+    },
+    {
+      "id": "n_models",
+      "type": "message",
+      "text": "You can browse all Suzuki models by category (Hatchback, Sedan, MPV, SUV/Off-roader, Commercial).",
+      "nextNodeId": "n_models_cta"
+    },
+    {
+      "id": "n_models_cta",
+      "type": "buttons",
+      "buttons": [
+        {
+          "id": "b_models_open",
+          "label": "Open models page",
+          "href": "https://auto.suzuki.com.ph/"
+        },
+        {
+          "id": "b_back_from_models",
+          "label": "Back",
+          "nextNodeId": "n_main_menu"
+        }
+      ]
+    },
+    {
+      "id": "n_pricelist",
+      "type": "message",
+      "text": "Want the latest price list? I can open the price list page for you.",
+      "nextNodeId": "n_pricelist_cta"
+    },
+    {
+      "id": "n_pricelist_cta",
+      "type": "buttons",
+      "buttons": [
+        {
+          "id": "b_pricelist_open",
+          "label": "Open price list",
+          "href": "https://auto.suzuki.com.ph/"
+        },
+        {
+          "id": "b_back_from_pricelist",
+          "label": "Back",
+          "nextNodeId": "n_main_menu"
+        }
+      ]
+    },
+    {
+      "id": "n_quote",
+      "type": "message",
+      "text": "I can help you request a quote. Typically you’ll choose a model and share your contact details.",
+      "nextNodeId": "n_quote_cta"
+    },
+    {
+      "id": "n_quote_cta",
+      "type": "buttons",
+      "buttons": [
+        {
+          "id": "b_quote_open",
+          "label": "Open Get a Quote",
+          "href": "https://auto.suzuki.com.ph/"
+        },
+        {
+          "id": "b_back_from_quote",
+          "label": "Back",
+          "nextNodeId": "n_main_menu"
+        }
+      ]
+    },
+    {
+      "id": "n_dealer",
+      "type": "message",
+      "text": "Looking for a Suzuki dealer? I can open the dealer locator page.",
+      "nextNodeId": "n_dealer_cta"
+    },
+    {
+      "id": "n_dealer_cta",
+      "type": "buttons",
+      "buttons": [
+        {
+          "id": "b_dealer_open",
+          "label": "Open dealer locator",
+          "href": "https://auto.suzuki.com.ph/"
+        },
+        {
+          "id": "b_back_from_dealer",
+          "label": "Back",
+          "nextNodeId": "n_main_menu"
+        }
+      ]
+    },
+    {
+      "id": "n_service",
+      "type": "message",
+      "text": "Need service or maintenance? I can open the booking page so you can schedule an appointment.",
+      "nextNodeId": "n_service_cta"
+    },
+    {
+      "id": "n_service_cta",
+      "type": "buttons",
+      "buttons": [
+        {
+          "id": "b_service_open",
+          "label": "Open book a service",
+          "href": "https://auto.suzuki.com.ph/"
+        },
+        {
+          "id": "b_back_from_service",
+          "label": "Back",
+          "nextNodeId": "n_main_menu"
+        }
+      ]
+    }
+  ],
+  "version": 2,
+  "updatedAt": "2026-03-17T09:31:35.190Z"
+}
