@@ -155,15 +155,18 @@ export default function StudioClient({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/75 backdrop-blur">
+    <div className="min-h-screen bg-[radial-gradient(1200px_circle_at_10%_10%,rgba(230,0,18,0.20),transparent_45%),radial-gradient(900px_circle_at_85%_30%,rgba(255,255,255,0.12),transparent_45%),linear-gradient(180deg,#09090b,rgba(9,9,11,0.92))] text-zinc-100">
+      <header className="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/60 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <div className="flex min-w-0 flex-col">
-            <div className="text-sm font-semibold tracking-wide text-zinc-100">
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wide text-zinc-100">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-[#E60012] text-xs font-black text-white">
+                S
+              </span>
               Bot Flow Studio
             </div>
             <div className="text-xs text-zinc-400">
-              Edit text, images, and buttons. Preview the chat. Publish creates a versioned copy.
+              Edit flows, preview the widget, then publish a version.
             </div>
           </div>
 
@@ -172,7 +175,7 @@ export default function StudioClient({
               onClick={saveDraft}
               disabled={!flow || saveState === "saving"}
               className={classNames(
-                "rounded-md px-3 py-2 text-sm font-medium",
+                "rounded-md px-3 py-2 text-sm font-medium ring-1 ring-inset ring-white/10",
                 !flow || saveState === "saving"
                   ? "bg-white/10 text-white/50"
                   : "bg-white text-zinc-950 hover:bg-zinc-100",
@@ -184,10 +187,10 @@ export default function StudioClient({
               onClick={publish}
               disabled={!flow || publishState === "saving"}
               className={classNames(
-                "rounded-md px-3 py-2 text-sm font-medium",
+                "rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-white/10",
                 !flow || publishState === "saving"
-                  ? "bg-emerald-500/20 text-emerald-200/60"
-                  : "bg-emerald-500 text-zinc-950 hover:bg-emerald-400",
+                  ? "bg-[#E60012]/25 text-white/60"
+                  : "bg-[#E60012] text-white hover:bg-[#c80010]",
               )}
             >
               {publishState === "saving"
@@ -202,7 +205,7 @@ export default function StudioClient({
 
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-4 px-4 py-4">
         <aside className="col-span-12 md:col-span-3">
-          <div className="rounded-lg border border-white/10 bg-zinc-900/40 p-3">
+          <div className="rounded-xl border border-white/10 bg-zinc-950/40 p-3 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]">
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
               Flows
             </div>
@@ -215,10 +218,10 @@ export default function StudioClient({
                     key={f.id}
                     onClick={() => setSelectedFlowId(f.id)}
                     className={classNames(
-                      "w-full rounded-md px-2 py-2 text-left",
+                      "w-full rounded-lg px-2.5 py-2 text-left ring-1 ring-inset ring-white/10",
                       f.id === selectedFlowId
                         ? "bg-white/10"
-                        : "hover:bg-white/5",
+                        : "bg-white/5 hover:bg-white/10",
                     )}
                   >
                     <div className="truncate text-sm font-medium text-zinc-100">
@@ -236,7 +239,7 @@ export default function StudioClient({
         </aside>
 
         <section className="col-span-12 md:col-span-5">
-          <div className="rounded-lg border border-white/10 bg-zinc-900/40">
+          <div className="rounded-xl border border-white/10 bg-zinc-950/40 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]">
             <div className="border-b border-white/10 p-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -267,7 +270,7 @@ export default function StudioClient({
                     <label className="text-xs font-semibold text-zinc-400">
                       Flow name
                       <input
-                        className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                        className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                         value={flow.name}
                         onChange={(e) => updateFlowMeta({ name: e.target.value })}
                       />
@@ -275,7 +278,7 @@ export default function StudioClient({
                     <label className="text-xs font-semibold text-zinc-400">
                       Description
                       <input
-                        className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                        className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                         value={flow.description ?? ""}
                         onChange={(e) =>
                           updateFlowMeta({ description: e.target.value || undefined })
@@ -285,14 +288,14 @@ export default function StudioClient({
                     <label className="text-xs font-semibold text-zinc-400">
                       Start node id
                       <input
-                        className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                        className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                         value={flow.startNodeId}
                         onChange={(e) => updateFlowMeta({ startNodeId: e.target.value })}
                       />
                     </label>
                   </div>
 
-                  <div className="rounded-md border border-white/10 bg-zinc-950/40 p-2">
+                  <div className="rounded-xl border border-white/10 bg-zinc-950/40 p-2">
                     <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       Nodes
                     </div>
@@ -302,10 +305,10 @@ export default function StudioClient({
                           key={n.id}
                           onClick={() => setSelectedNodeId(n.id)}
                           className={classNames(
-                            "w-full rounded-md px-2 py-2 text-left",
+                            "w-full rounded-lg px-2.5 py-2 text-left ring-1 ring-inset ring-white/10",
                             n.id === selectedNodeId
                               ? "bg-white/10"
-                              : "hover:bg-white/5",
+                              : "bg-white/5 hover:bg-white/10",
                           )}
                         >
                           <div className="flex items-center justify-between gap-2">
@@ -325,7 +328,7 @@ export default function StudioClient({
                   </div>
 
                   {selectedNode ? (
-                    <div className="rounded-lg border border-white/10 bg-zinc-950/40 p-3">
+                    <div className="rounded-xl border border-white/10 bg-zinc-950/40 p-3">
                       <div className="mb-2 flex items-center justify-between gap-2">
                         <div className="text-sm font-semibold">
                           Node <span className="font-mono">{selectedNode.id}</span>
@@ -338,7 +341,7 @@ export default function StudioClient({
                           Text
                           <textarea
                             rows={3}
-                            className="mt-1 w-full resize-y rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                            className="mt-1 w-full resize-y rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                             value={selectedNode.text ?? ""}
                             onChange={(e) =>
                               updateNode({ text: e.target.value || undefined })
@@ -350,7 +353,7 @@ export default function StudioClient({
                         <label className="text-xs font-semibold text-zinc-400">
                           Image URL (optional)
                           <input
-                            className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                            className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                             value={selectedNode.imageUrl ?? ""}
                             onChange={(e) =>
                               updateNode({ imageUrl: e.target.value || undefined })
@@ -362,7 +365,7 @@ export default function StudioClient({
                         <label className="text-xs font-semibold text-zinc-400">
                           Next node id (optional)
                           <input
-                            className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                            className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                             value={selectedNode.nextNodeId ?? ""}
                             onChange={(e) =>
                               updateNode({ nextNodeId: e.target.value || undefined })
@@ -372,7 +375,7 @@ export default function StudioClient({
                         </label>
 
                         {selectedNode.type === "buttons" ? (
-                          <div className="rounded-md border border-white/10 bg-zinc-950 p-2">
+                          <div className="rounded-xl border border-white/10 bg-zinc-950/40 p-2">
                             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                               Buttons
                             </div>
@@ -380,13 +383,13 @@ export default function StudioClient({
                               {(selectedNode.buttons ?? []).map((b, idx) => (
                                 <div
                                   key={b.id}
-                                  className="grid grid-cols-1 gap-2 rounded-md border border-white/10 bg-zinc-950/40 p-2"
+                                  className="grid grid-cols-1 gap-2 rounded-xl border border-white/10 bg-zinc-950/40 p-2"
                                 >
                                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                     <label className="text-xs font-semibold text-zinc-400">
                                       Label
                                       <input
-                                        className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                                        className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                                         value={b.label}
                                         onChange={(e) => {
                                           const next = [...(selectedNode.buttons ?? [])];
@@ -398,7 +401,7 @@ export default function StudioClient({
                                     <label className="text-xs font-semibold text-zinc-400">
                                       Next node id
                                       <input
-                                        className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                                        className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                                         value={b.nextNodeId ?? ""}
                                         onChange={(e) => {
                                           const next = [...(selectedNode.buttons ?? [])];
@@ -414,7 +417,7 @@ export default function StudioClient({
                                   <label className="text-xs font-semibold text-zinc-400">
                                     Href (optional)
                                     <input
-                                      className="mt-1 w-full rounded-md border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-white/20"
+                                      className="mt-1 w-full rounded-lg border border-white/10 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#E60012]/60 focus:ring-2 focus:ring-[#E60012]/20"
                                       value={b.href ?? ""}
                                       onChange={(e) => {
                                         const next = [...(selectedNode.buttons ?? [])];
@@ -429,7 +432,7 @@ export default function StudioClient({
                                 </div>
                               ))}
                               <button
-                                className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
+                                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
                                 onClick={() => {
                                   const next = [
                                     ...(selectedNode.buttons ?? []),
@@ -457,11 +460,11 @@ export default function StudioClient({
         </section>
 
         <section className="col-span-12 md:col-span-4">
-          <div className="rounded-lg border border-white/10 bg-zinc-900/40">
+          <div className="rounded-xl border border-white/10 bg-zinc-950/40 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]">
             <div className="border-b border-white/10 p-3">
-              <div className="text-sm font-semibold">Preview</div>
+              <div className="text-sm font-semibold">Widget preview</div>
               <div className="text-xs text-zinc-400">
-                Click buttons to traverse the flow (preview only).
+                Styled like a website chat widget. Buttons are clickable.
               </div>
             </div>
 
@@ -503,56 +506,79 @@ function ChatPreview({
   }
 
   return (
-    <div className="flex flex-col gap-3 p-3">
-      <div className="rounded-lg bg-zinc-950/50 p-3">
-        <div className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
-          Chat
-        </div>
-        <div className="mt-2 space-y-2">
-          {path.map((n) => (
-            <div key={`${n.id}-${n.type}`} className="space-y-2">
-              {n.type !== "image" ? (
-                n.text ? (
-                  <div className="max-w-[90%] rounded-2xl bg-white/10 px-3 py-2 text-sm">
-                    {n.text}
-                  </div>
-                ) : null
-              ) : null}
-
-              {n.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={n.imageUrl}
-                  alt=""
-                  className="max-w-[90%] rounded-xl border border-white/10"
-                />
-              ) : null}
+    <div className="p-3">
+      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-white/10 bg-white shadow-[0_30px_80px_-50px_rgba(0,0,0,0.9)]">
+        <div className="flex items-center justify-between bg-[#E60012] px-4 py-3 text-white">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-sm font-black ring-1 ring-inset ring-white/25">
+              S
+            </span>
+            <div className="leading-tight">
+              <div className="text-sm font-semibold">Suzuki Assistant</div>
+              <div className="text-[11px] text-white/80">Online</div>
             </div>
-          ))}
+          </div>
+          <div className="flex items-center gap-2 text-white/80">
+            <span className="h-2 w-2 rounded-full bg-white/70" />
+            <span className="h-2 w-2 rounded-full bg-white/50" />
+            <span className="h-2 w-2 rounded-full bg-white/35" />
+          </div>
+        </div>
 
-          {currentNode?.type === "buttons" && (currentNode.buttons?.length ?? 0) > 0 ? (
-            <div className="flex flex-wrap gap-2 pt-2">
-              {currentNode.buttons!.map((b) => (
-                <button
-                  key={b.id}
-                  onClick={() => {
-                    if (b.href) window.open(b.href, "_blank", "noopener,noreferrer");
-                    if (b.nextNodeId) jumpTo(b.nextNodeId);
-                  }}
-                  className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-                >
-                  {b.label}
-                </button>
+        <div className="bg-[radial-gradient(700px_circle_at_20%_0%,rgba(230,0,18,0.08),transparent_45%),linear-gradient(180deg,#ffffff,#fafafa)]">
+          <div className="h-[520px] overflow-auto px-4 py-4">
+            <div className="space-y-3">
+              {path.map((n) => (
+                <div key={`${n.id}-${n.type}`} className="space-y-2">
+                  {n.type !== "image" ? (
+                    n.text ? (
+                      <div className="flex items-end gap-2">
+                        <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-xs font-black text-zinc-700 ring-1 ring-inset ring-zinc-200 sm:inline-flex">
+                          S
+                        </div>
+                        <div className="max-w-[90%] rounded-2xl rounded-bl-md bg-zinc-100 px-3 py-2 text-sm text-zinc-900 ring-1 ring-inset ring-zinc-200">
+                          {n.text}
+                        </div>
+                      </div>
+                    ) : null
+                  ) : null}
+
+                  {n.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={n.imageUrl}
+                      alt=""
+                      className="max-w-[90%] rounded-2xl ring-1 ring-inset ring-zinc-200"
+                    />
+                  ) : null}
+                </div>
               ))}
-            </div>
-          ) : null}
-        </div>
-      </div>
 
-      <div className="rounded-lg border border-white/10 bg-zinc-950/40 p-3 text-xs text-zinc-400">
-        <div className="font-semibold text-zinc-200">Tip</div>
-        <div className="mt-1">
-          Publish creates a versioned JSON in <span className="font-mono">flows/published/</span> and bumps the draft version.
+              {currentNode?.type === "buttons" &&
+              (currentNode.buttons?.length ?? 0) > 0 ? (
+                <div className="pt-2">
+                  <div className="flex flex-wrap gap-2">
+                    {currentNode.buttons!.map((b) => (
+                      <button
+                        key={b.id}
+                        onClick={() => {
+                          if (b.href)
+                            window.open(b.href, "_blank", "noopener,noreferrer");
+                          if (b.nextNodeId) jumpTo(b.nextNodeId);
+                        }}
+                        className="rounded-full border border-[#E60012]/25 bg-white px-3 py-2 text-sm font-medium text-[#b4000e] shadow-sm hover:border-[#E60012]/50 hover:bg-[#E60012]/5"
+                      >
+                        {b.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-2 text-xs text-zinc-500">
+                    Preview only • edits won’t affect production until you publish.
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     </div>
