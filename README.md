@@ -1,3 +1,4 @@
+HEAD
 ## Bot Flow Studio
 
 Edit chatbot flows (text, images, buttons) with live preview and a Publish action that writes versioned flow JSON.
@@ -41,3 +42,5 @@ This app currently stores flows on the server filesystem (`flows/…`). On Verce
 
 If you need “draft edits + publish” to reliably persist for real usage, switch storage to a DB (e.g. Vercel Postgres / Supabase). For a quick demo to share, Vercel is fine.
 
+# BOT_Preview
+fca99a333b5908c035041f9289be75736fbcc0eb
