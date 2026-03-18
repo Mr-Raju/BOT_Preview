@@ -1,4 +1,3 @@
-HEAD
 ## Bot Flow Studio
 
 Edit chatbot flows (text, images, buttons) with live preview and a Publish action that writes versioned flow JSON.
