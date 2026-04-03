@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NCC AI — Contact Center Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #0b0f14;
+      --bg-panel: #12181f;
+      --bg-card: #161d27;
+      --bg-hover: #1c2533;
+      --border: rgba(255, 255, 255, 0.06);
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #3d9cf5;
+      --accent-dim: rgba(61, 156, 245, 0.15);
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --purple: #a78bfa;
+      --teal: #2dd4bf;
+      --radius: 12px;
+      --sidebar-w: 240px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      padding: 0 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .brand-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .nav-section {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.75rem 1.25rem 0.35rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 1.25rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-hover);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      color: var(--text);
+      background: var(--accent-dim);
+      border-left-color: var(--accent);
+    }
+
+    .nav-icon {
+      width: 18px;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(18, 24, 31, 0.85);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .topbar-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .filters label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-right: 0.25rem;
+    }
+
+    select, .btn {
+      font-family: inherit;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2b8ef0, #1d6fc4);
+      border-color: transparent;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+    }
+
+    .content {
+      padding: 1.25rem 1.5rem 2rem;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .kpi {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1rem 0.85rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--kpi-bar, var(--accent));
+      opacity: 0.9;
+    }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-delta {
+      font-size: 0.78rem;
+      margin-top: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .kpi-delta.up { color: var(--success); }
+    .kpi-delta.down { color: var(--danger); }
+    .kpi-delta.neutral { color: var(--muted); }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 960px) {
+      .row-2 { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .panel-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 260px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.55rem 0.65rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:hover td {
+      background: var(--bg-hover);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tag-voice { background: rgba(61, 156, 245, 0.2); color: var(--accent); }
+    .tag-ivr { background: rgba(167, 139, 250, 0.2); color: var(--purple); }
+    .tag-queue { background: rgba(45, 212, 191, 0.15); color: var(--teal); }
+
+    .footer-note {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">Nextiva NCC</div>
+        <div class="brand-title">AI Dashboard</div>
+        <div class="brand-sub">Contact Center Analytics</div>
+      </div>
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active"><span class="nav-icon">◉</span> Executive</div>
+      <div class="nav-item"><span class="nav-icon">☎</span> Voice queues</div>
+      <div class="nav-item"><span class="nav-icon">⌗</span> IVR &amp; self‑serve</div>
+      <div class="nav-item"><span class="nav-icon">▤</span> Agent performance</div>
+      <div class="nav-section">Quality</div>
+      <div class="nav-item"><span class="nav-icon">✦</span> CSAT &amp; QA</div>
+      <div class="nav-item"><span class="nav-icon">⏱</span> Realtime wallboard</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1>Contact center operations</h1>
+          <p class="topbar-meta" id="clock">—</p>
+        </div>
+        <div class="filters">
+          <div>
+            <label for="range">Range</label>
+            <select id="range" aria-label="Date range">
+              <option value="today" selected>Today</option>
+              <option value="week">Last 7 days</option>
+              <option value="month">Last 30 days</option>
+            </select>
+          </div>
+          <div>
+            <label for="queue">Queue</label>
+            <select id="queue" aria-label="Queue filter">
+              <option value="all" selected>All queues</option>
+              <option value="sales">Sales</option>
+              <option value="support">Support</option>
+              <option value="billing">Billing</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" id="refresh">Refresh</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="kpi-grid" aria-label="Key metrics">
+          <article class="kpi" style="--kpi-bar: var(--accent);">
+            <div class="kpi-label">Calls offered</div>
+            <div class="kpi-value" data-metric="offered">12,847</div>
+            <div class="kpi-delta up">▲ 4.2% vs prior period</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--success);">
+            <div class="kpi-label">Calls handled</div>
+            <div class="kpi-value" data-metric="handled">11,204</div>
+            <div class="kpi-delta up">▲ 2.1%</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--danger);">
+            <div class="kpi-label">Missed calls</div>
+            <div class="kpi-value" data-metric="missed">412</div>
+            <div class="kpi-delta down">▼ 8.3% (fewer is better)</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--purple);">
+            <div class="kpi-label">Voicemails</div>
+            <div class="kpi-value" data-metric="vm">189</div>
+            <div class="kpi-delta neutral">→ flat</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--teal);">
+            <div class="kpi-label">IVR contained</div>
+            <div class="kpi-value" data-metric="ivr">68.4%</div>
+            <div class="kpi-delta up">▲ 1.4 pts</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #fb923c;">
+            <div class="kpi-label">IVR abandon</div>
+            <div class="kpi-value" data-metric="ivrAbandon">5.1%</div>
+            <div class="kpi-delta down">▼ 0.6 pts</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #f472b6;">
+            <div class="kpi-label">Queue abandoned</div>
+            <div class="kpi-value" data-metric="abandon">623</div>
+            <div class="kpi-delta down">▼ 3.8%</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--warning);">
+            <div class="kpi-label">Abandon rate</div>
+            <div class="kpi-value" data-metric="abandonRate">5.5%</div>
+            <div class="kpi-delta neutral">Target &lt; 6%</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--accent);">
+            <div class="kpi-label">Service level (20s)</div>
+            <div class="kpi-value" data-metric="sl">82.7%</div>
+            <div class="kpi-delta up">▲ vs 78.1%</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #94a3b8;">
+            <div class="kpi-label">ASA</div>
+            <div class="kpi-value" data-metric="asa">42s</div>
+            <div class="kpi-delta up">▲ faster</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #60a5fa;">
+            <div class="kpi-label">AHT</div>
+            <div class="kpi-value" data-metric="aht">6m 12s</div>
+            <div class="kpi-delta neutral">Within band</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: var(--success);">
+            <div class="kpi-label">FCR</div>
+            <div class="kpi-value" data-metric="fcr">76.2%</div>
+            <div class="kpi-delta up">▲ 0.9 pts</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #c084fc;">
+            <div class="kpi-label">Occupancy</div>
+            <div class="kpi-value" data-metric="occ">71%</div>
+            <div class="kpi-delta neutral">Healthy</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #38bdf8;">
+            <div class="kpi-label">Adherence</div>
+            <div class="kpi-value" data-metric="adh">93.4%</div>
+            <div class="kpi-delta up">▲</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #facc15;">
+            <div class="kpi-label">Callback kept</div>
+            <div class="kpi-value" data-metric="cb">91%</div>
+            <div class="kpi-delta up">▲</div>
+          </article>
+          <article class="kpi" style="--kpi-bar: #4ade80;">
+            <div class="kpi-label">CSAT</div>
+            <div class="kpi-value" data-metric="csat">4.52</div>
+            <div class="kpi-delta up">/5.0</div>
+          </article>
+        </section>
+
+        <div class="row-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Call outcome mix</div>
+                <div class="panel-hint">Handled vs missed, VM, IVR, abandon</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartOutcomes" aria-label="Call outcomes chart"></canvas>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Hourly contact volume</div>
+                <div class="panel-hint">Offered vs answered (voice)</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartVolume" aria-label="Hourly volume chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">IVR funnel</div>
+                <div class="panel-hint">Entries → contained → queue → abandon</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartIvr" aria-label="IVR funnel chart"></canvas>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Queue health</div>
+                <div class="panel-hint">ASA, abandon %, SL by queue</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartQueues" aria-label="Queue health chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Live queue snapshot</div>
+              <div class="panel-hint">Sample CCaaS wallboard data</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Queue</th>
+                  <th>Waiting</th>
+                  <th>Longest wait</th>
+                  <th>Agents avail</th>
+                  <th>ASA (rolling)</th>
+                  <th>Abandon %</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody id="queueTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="footer-note">
+          Demo dashboard — metrics are illustrative. Connect your telephony / CCaaS APIs to drive live data.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const fmt = (n) => n.toLocaleString("en-US");
+    const queueRows = [
+      { name: "Sales — voice", waiting: 14, longest: "4m 10s", avail: 8, asa: "38s", abandon: "4.2%", type: "voice" },
+      { name: "Support L2", waiting: 31, longest: "8m 02s", avail: 12, asa: "1m 05s", abandon: "7.1%", type: "voice" },
+      { name: "Billing", waiting: 6, longest: "1m 22s", avail: 5, asa: "22s", abandon: "3.0%", type: "voice" },
+      { name: "IVR self‑serve", waiting: "—", longest: "—", avail: "—", asa: "—", abandon: "5.1%", type: "ivr" },
+      { name: "Callback queue", waiting: 22, longest: "SLA 15m", avail: 3, asa: "—", abandon: "1.8%", type: "queue" },
+    ];
+
+    function renderTable() {
+      const tbody = document.getElementById("queueTable");
+      tbody.innerHTML = queueRows
+        .map(
+          (r) => `
+        <tr>
+          <td>${r.name}</td>
+          <td>${r.waiting}</td>
+          <td>${r.longest}</td>
+          <td>${r.avail}</td>
+          <td>${r.asa}</td>
+          <td>${r.abandon}</td>
+          <td><span class="tag tag-${r.type === "ivr" ? "ivr" : r.type === "queue" ? "queue" : "voice"}">${r.type.toUpperCase()}</span></td>
+        </tr>`
+        )
+        .join("");
+    }
+
+    function tickClock() {
+      const el = document.getElementById("clock");
+      const now = new Date();
+      el.textContent =
+        now.toLocaleString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }) + " · local";
+    }
+
+    Chart.defaults.color = "#8b9cb3";
+    Chart.defaults.borderColor = "rgba(255,255,255,0.06)";
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+
+    const commonOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom", labels: { boxWidth: 10, padding: 16 } } },
+    };
+
+    let chartOutcomes, chartVolume, chartIvr, chartQueues;
+
+    function buildCharts() {
+      const ctx1 = document.getElementById("chartOutcomes");
+      chartOutcomes?.destroy();
+      chartOutcomes = new Chart(ctx1, {
+        type: "doughnut",
+        data: {
+          labels: ["Handled", "Missed", "Voicemail", "IVR contained", "Queue abandon", "IVR abandon"],
+          datasets: [
+            {
+              data: [11204, 412, 189, 3200, 623, 180],
+              backgroundColor: ["#34d399", "#f87171", "#a78bfa", "#2dd4bf", "#f472b6", "#fb923c"],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: { ...commonOpts, cutout: "62%" },
+      });
+
+      const hours = Array.from({ length: 12 }, (_, i) => `${8 + i}:00`);
+      const ctx2 = document.getElementById("chartVolume");
+      chartVolume?.destroy();
+      chartVolume = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels: hours,
+          datasets: [
+            {
+              label: "Offered",
+              data: [420, 510, 680, 920, 1100, 1050, 890, 760, 640, 520, 410, 380],
+              borderColor: "#3d9cf5",
+              backgroundColor: "rgba(61,156,245,0.12)",
+              fill: true,
+              tension: 0.35,
+            },
+            {
+              label: "Answered",
+              data: [400, 485, 640, 860, 980, 940, 820, 700, 590, 480, 375, 350],
+              borderColor: "#34d399",
+              backgroundColor: "rgba(52,211,153,0.08)",
+              fill: true,
+              tension: 0.35,
+            },
+          ],
+        },
+        options: {
+          ...commonOpts,
+          scales: {
+            y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.04)" } },
+            x: { grid: { display: false } },
+          },
+        },
+      });
+
+      const ctx3 = document.getElementById("chartIvr");
+      chartIvr?.destroy();
+      chartIvr = new Chart(ctx3, {
+        type: "bar",
+        data: {
+          labels: ["Presented", "Contained", "To agent", "IVR abandon", "Error / zero-out"],
+          datasets: [
+            {
+              label: "Calls",
+              data: [12847, 8787, 2850, 655, 180],
+              backgroundColor: ["#3d9cf5", "#2dd4bf", "#a78bfa", "#fb923c", "#f87171"],
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.04)" } },
+            x: { grid: { display: false } },
+          },
+        },
+      });
+
+      const ctx4 = document.getElementById("chartQueues");
+      chartQueues?.destroy();
+      chartQueues = new Chart(ctx4, {
+        type: "bar",
+        data: {
+          labels: ["Sales", "Support", "Billing", "VIP"],
+          datasets: [
+            {
+              label: "ASA (sec)",
+              data: [38, 65, 22, 18],
+              backgroundColor: "rgba(61,156,245,0.7)",
+              borderRadius: 6,
+            },
+            {
+              label: "Abandon %",
+              data: [4.2, 7.1, 3.0, 1.2],
+              backgroundColor: "rgba(244,114,182,0.75)",
+              borderRadius: 6,
+              yAxisID: "y1",
+            },
+          ],
+        },
+        options: {
+          ...commonOpts,
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "ASA (seconds)" } },
+            y1: {
+              position: "right",
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: "Abandon %" },
+            },
+            x: { grid: { display: false } },
+          },
+        },
+      });
+    }
+
+    function jitterMetrics() {
+      const base = {
+        offered: 12847,
+        handled: 11204,
+        missed: 412,
+        vm: 189,
+        ivr: "68.4%",
+        ivrAbandon: "5.1%",
+        abandon: 623,
+        abandonRate: "5.5%",
+        sl: "82.7%",
+        asa: "42s",
+        aht: "6m 12s",
+        fcr: "76.2%",
+        occ: "71%",
+        adh: "93.4%",
+        cb: "91%",
+        csat: "4.52",
+      };
+      const j = (v, pct) => Math.round(v * (1 + (Math.random() - 0.5) * pct));
+      document.querySelector('[data-metric="offered"]').textContent = fmt(j(base.offered, 0.02));
+      document.querySelector('[data-metric="handled"]').textContent = fmt(j(base.handled, 0.02));
+      document.querySelector('[data-metric="missed"]').textContent = fmt(j(base.missed, 0.08));
+      document.querySelector('[data-metric="vm"]').textContent = fmt(j(base.vm, 0.06));
+    }
+
+    document.getElementById("refresh").addEventListener("click", () => {
+      jitterMetrics();
+      buildCharts();
+    });
+
+    document.getElementById("range").addEventListener("change", jitterMetrics);
+    document.getElementById("queue").addEventListener("change", jitterMetrics);
+
+    renderTable();
+    tickClock();
+    setInterval(tickClock, 1000);
+    buildCharts();
+  </script>
+</body>
+</html>
