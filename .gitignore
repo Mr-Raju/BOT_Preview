@@ -8,6 +8,7 @@
 
 # Python
 .venv/
+.venv-pptx/
 __pycache__/
 *.pyc
 
