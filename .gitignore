@@ -9,6 +9,7 @@
 # Python
 .venv/
 .venv-pptx/
+.venv-xlsx/
 __pycache__/
 *.pyc
 
